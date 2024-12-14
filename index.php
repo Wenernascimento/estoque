@@ -5,6 +5,12 @@ session_start();
 // Inclui o arquivo de configuração do banco de dados
 require_once 'db.php';
 
+// Verifica se o usuário está logado
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php'); // Redireciona para a página de login se não estiver logado
+    exit();
+}
+
 // Função para obter todos os produtos do banco de dados com filtro
 function obterProdutos($conn, $filtro = '') {
     try {
@@ -54,6 +60,29 @@ $produtos = obterProdutos($conn, $filtroPesquisa);
             margin-bottom: 10px;
         }
 
+        /* Estilo da área do login (canto superior direito) */
+        .login-info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #ECF0F1;
+        }
+
+        .login-info a {
+            color: #f44336;
+            text-decoration: none;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        .login-info a:hover {
+            text-decoration: underline;
+        }
+
         .menu {
             display: flex;
             justify-content: center;
@@ -82,6 +111,7 @@ $produtos = obterProdutos($conn, $filtroPesquisa);
             transform: scale(1.05);
         }
 
+        /* Formulário de pesquisa */
         .search-container {
             margin-bottom: 20px;
         }
@@ -94,6 +124,7 @@ $produtos = obterProdutos($conn, $filtroPesquisa);
             font-size: 16px;
         }
 
+        /* Estilo da tabela */
         .table-container {
             width: 100%;
             max-width: 1200px;
@@ -110,7 +141,7 @@ $produtos = obterProdutos($conn, $filtroPesquisa);
         }
 
         th, td {
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(220, 245, 60, 0.1);
             padding: 12px;
             text-align: center;
         }
@@ -122,11 +153,11 @@ $produtos = obterProdutos($conn, $filtroPesquisa);
         }
 
         tr:nth-child(even) {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(233, 217, 217, 0.1);
         }
 
         tr:hover {
-            background-color: rgba(240, 255, 240, 0.9);
+            background-color: rgba(59, 186, 249, 0.9);
             transition: background-color 0.3s;
         }
 
@@ -185,15 +216,39 @@ $produtos = obterProdutos($conn, $filtroPesquisa);
             font-weight: bold;
         }
 
+        /* Adicionando a classe para destacar a quantidade baixa */
+        .quantidade-baixa {
+            background-color: ; /* Cor amarela para quantidade baixa */
+            color: yellow; /* Cor preta para contraste */
+        }
+
+        .logout-link {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .logout-link:hover {
+            background-color: #d32f2f;
+        }
     </style>
 </head>
 <body>
+    <!-- Área de Login (fixa no topo direito) -->
+    <div class="login-info">
+        <span>Bem-vindo, <?php echo $_SESSION['username']; ?>!</span>
+        <a href="logout.php">Sair</a>
+    </div>
+
     <h1>Controle de Estoque 📦</h1>
 
     <div class="menu">
         <a href="venda.php">Venda</a>
         <a href="vendas.php">Histórico de Vendas</a>
-        <a href="cadastrar.php">Cadastrar Produto</a>
+        <a href="cadastrar_produto.php">Cadastrar Produto</a>
     </div>
 
     <!-- Formulário de pesquisa -->
@@ -237,6 +292,9 @@ $produtos = obterProdutos($conn, $filtroPesquisa);
                             $totalVenda = $valorVenda * $quantidade;
                             $totalLucro = $totalVenda - $totalCusto;
                             $dizimo = $totalLucro * 0.1;
+                            
+                            // Verificando se a quantidade é menor que 5
+                            $quantidadeClass = ($quantidade < 5) ? 'quantidade-baixa' : '';
                         ?>
 
                         <tr>
@@ -244,7 +302,7 @@ $produtos = obterProdutos($conn, $filtroPesquisa);
                             <td><?= htmlspecialchars($produto['nome']) ?></td>
                             <td><?= htmlspecialchars($produto['validade']) ?></td>
                             <td>R$<?= number_format($preco, 2, ',', '.') ?></td>
-                            <td><?= htmlspecialchars($produto['quantidade']) ?></td>
+                            <td class="<?= $quantidadeClass ?>"><?= htmlspecialchars($produto['quantidade']) ?></td>
                             <td>R$<?= number_format($valorVenda, 2, ',', '.') ?></td>
                             <td>R$<?= number_format($lucroUnitario, 2, ',', '.') ?></td>
                             <td><?= number_format($porcentagemLucro, 2, ',', '.') ?>%</td>
@@ -278,5 +336,6 @@ $produtos = obterProdutos($conn, $filtroPesquisa);
             <p style="color: red;">Nenhum produto encontrado no estoque.</p>
         <?php endif; ?>
     </div>
+
 </body>
 </html>

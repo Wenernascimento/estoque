@@ -103,6 +103,7 @@ $totalGeralVendas = $stmtTotalGeral->fetchColumn();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Histórico de Vendas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Carregar Chart.js -->
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -280,7 +281,12 @@ $totalGeralVendas = $stmtTotalGeral->fetchColumn();
                             <td>R$  <?= number_format($venda['total'], 2, ',', '.') ?></td>
                             <td><?= htmlspecialchars($venda['data_venda']) ?></td>
                             <td><?= htmlspecialchars($venda['forma_pagamento']) ?></td>
-                          
+                            <td>
+                                <form method="POST" style="display:inline;">
+                                    <input type="hidden" name="venda_id" value="<?= $venda['id'] ?>">
+                                    <button type="submit" name="excluir_venda" style="background-color:red; color:white; border:none; padding:5px 10px; cursor:pointer;">Excluir</button>
+                                </form>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
@@ -293,41 +299,36 @@ $totalGeralVendas = $stmtTotalGeral->fetchColumn();
     </div>
 
     <script>
-    // Extrair os dados de vendas filtradas do PHP
+    // Verificando se temos dados de vendas
     var meses = <?php echo json_encode(array_map(function($v) { return date('M', strtotime($v['data_venda'])); }, $vendasFiltradas)); ?>;
     var totais = <?php echo json_encode(array_map(function($v) { return (float)$v['total']; }, $vendasFiltradas)); ?>;
 
-    // Configuração do gráfico
-    var ctx = document.getElementById('vendasChart').getContext('2d');
-    var vendasChart = new Chart(ctx, {
-        type: 'bar', // Tipo de gráfico (bar, line, etc)
-        data: {
-            labels: meses, // Meses ou outros critérios
-            datasets: [{
-                label: 'Total de Vendas', // Título do gráfico
-                data: totais, // Dados do gráfico (totais de vendas)
-                backgroundColor: 'rgba(0, 123, 255, 0.6)', // Cor das barras
-                borderColor: 'rgba(0, 123, 255, 1)', // Cor da borda das barras
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Vendas por Mês' // Título do gráfico
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(tooltipItem) {
-                            return 'R$ ' + tooltipItem.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                        }
+    // Se existirem dados, cria o gráfico
+    if (meses.length > 0 && totais.length > 0) {
+        var ctx = document.getElementById('vendasChart').getContext('2d');
+        var vendasChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: meses, // Meses ou outro critério
+                datasets: [{
+                    label: 'Total de Vendas',
+                    data: totais,
+                    backgroundColor: 'rgba(0, 123, 255, 0.6)',
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Vendas por Mês'
                     }
                 }
             }
-        }
-    });
+        });
+    }
     </script>
 </body>
 </html>
