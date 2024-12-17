@@ -337,5 +337,7 @@ $produtos = obterProdutos($conn, $filtroPesquisa);
         <?php endif; ?>
     </div>
 
+    <a href="./root/create.php">Criar Novo Usuário</a>
+
 </body>
 </html>

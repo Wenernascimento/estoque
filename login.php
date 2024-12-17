@@ -1,4 +1,4 @@
-<?php
+<?php 
 // Inicia a sessão
 session_start();
 
@@ -59,25 +59,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Login</title>
     <style>
         /* Estilo global */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-image: url('sua-imagem.jpg'); /* Altere o caminho para a sua imagem */
-            background-size: cover; /* Faz a imagem cobrir toda a tela */
-            background-position: center; /* Centraliza a imagem */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            color: #fff; /* Ajusta a cor do texto para branco para maior contraste */
+        *{
+            margin:0;
+            padding 0;
+            box-sizing: border-box;
+
         }
+        body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom, #2b5876, #4e4376); /* Degradê de cima para baixo */
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+
+
+
 
         /* Estilo do container do login */
         .login-container {
-            background-color: rgba(255, 255, 255, 0.8); /* Fundo branco translúcido */
+            background-color: rgba(243, 52, 52, 0); /* Fundo branco translúcido */
             padding: 40px;
             border-radius: 10px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 15px 30px rgba(217, 196, 196, 0.1);
             width: 350px;
             text-align: center;
         }
@@ -113,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         input[type="submit"] {
             width: 100%;
             padding: 12px;
-            background-color: #4CAF50;
+            background-color:rgb(10, 26, 11);
             color: white;
             border: none;
             border-radius: 5px;
@@ -131,6 +139,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: red;
             font-size: 14px;
             margin-top: 15px;
+        }
+
+        /* Estilo do link "Registrar-se" */
+        .register-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .register-link a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -154,6 +178,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php if (!empty($erro)): ?>
             <p class="error-message"><?php echo $erro; ?></p>
         <?php endif; ?>
+
+        <!-- Link para a página de registro -->
+        <div class="register-link">
+            <p>Ainda não tem uma conta? <a href="./root/create.php">Registre-se aqui</a></p>
+        </div>
     </div>
 
 </body>
